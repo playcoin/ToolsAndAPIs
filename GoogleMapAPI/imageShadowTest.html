@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!-- 
+  saved from url=(0101)http://code.google.com/intl/zh-CN/apis/maps/documentation/javascript/v2/examples/static+js-debug.html 
+  
+  GoogleMapAPI中解决地图加载慢的解决方案：先加载一个静态图片。
+  关键的地方是#mapcontainer>img元素的src属性，照着这么写就行了，可能还有key要填一下。
+  不过这个方法一篇也就用一次，可以把第一次加载的图片下载下来，放在自己的工程目录中，以后直接用就行。
+  
+-->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+<title>Google Maps</title>
+</head>
+<body>
+  <div id="blurb" style="width: 320px;">
+	<p>This page loads a static map first, and then loads the JS API by callback. When the JS API has finished loading, it removes the static map.</p>
+    <div id="mapcontainer" style="position:relative">
+      <!-- ceter = 39.92, 110.46 这里可以修改地图中心坐标-->
+      <!-- z-index = 0 to disable push map-->
+      <img style="position:absolute;z-index:0" id="staticmap" src="http://maps.google.com/maps/api/staticmap?center=39.92, 110.46&key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA&zoom=2&size=640x400&sensor=false">
+      <div id="map" style="position:absolute;width:640px;height:400px;z-index:1"></div>
+    </div>
+  </div>
+
+<script type="text/javascript"> 
+/*
+* Sets up the Dynamic Google Maps API
+*/
+function loadMap() {
+
+  // Use the older version of Google Map
+  var myCenter = new google.maps.LatLng(39.92, 110.46);
+  var myOptions = {
+    zoom: 2,
+    center: myCenter,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  }
+        
+  var map = new google.maps.Map(document.getElementById('map'), myOptions);
+
+  //add the store markerS
+  var m_image = new google.maps.MarkerImage('images/1007.png', new google.maps.Size(16, 16), new google.maps.Point(0,0), new google.maps.Point(0, 0), new google.maps.Size(16, 16));
+  var m_image_bg = new google.maps.MarkerImage('images/bg.png', new google.maps.Size(32, 32), new google.maps.Point(0,0), new google.maps.Point(0, 0), new google.maps.Size(32, 32));
+  // location
+  var loc = new google.maps.LatLng(39.92, 110.46);
+  // shape
+  var shape = {
+        coord: [15, 15, 15],
+        type: 'circ'
+      };
+
+  marker = new google.maps.Marker({
+        position: loc,
+        title: "new marker",
+        icon: m_image,
+        mkShape: shape,
+        // test the Shadow Class
+        shadow: m_image_bg,
+        map: map
+  }); 
+
+  // Add an event listener on the tilesloaded event
+  // When tiles are ready, remove the map
+}
+
+function removeStaticMap() {
+  setTimeout(pushStaticMap,2000);
+  
+  function pushStaticMap() {
+    var image = document.getElementById("staticmap");
+    image.style.zIndex = 0;
+  }
+}
+</script>
+<!-- the old version of Google Map, assign "loadMap" to callback function-->
+<script src="http://maps.google.com/maps/api/js?sensor=false&callback=loadMap" type="text/javascript">
+</script>
+</body>
+</html
